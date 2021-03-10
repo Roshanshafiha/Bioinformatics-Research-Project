@@ -15,7 +15,7 @@ library(ggplot2)
 library( EnhancedVolcano )
 ```
 
-load the BRCA2 mutant files 
+#load the BRCA2 mutant files 
 
 ```{r,message=FALSE,warning=F}
 a423_R1 = read.table("a423_R1.cntTable",header = T)
@@ -39,7 +39,7 @@ a423<- data.frame(a423[,-1], row.names=a423[,1])
 
 ```
 
-load the EUFA cells WT BRCA2 over expressed
+#load the EUFA cells WT BRCA2 over expressed
 
 ```{r , echo=FALSE,message=FALSE,warning=F}
 
@@ -65,7 +65,7 @@ aFB2<- data.frame(aFB2[,-1], row.names=aFB2[,1])
 
 ```
 
-create the count table by merging the dataset
+#create the count table by merging the dataset
 
 ```{r}
 
@@ -73,7 +73,7 @@ count_aFB2 <- cbind (a423,aFB2)
 
 ```
 
-create the metadata that has to be sent into DEseq2
+#create the metadata that has to be sent into DEseq2
 
 ```{r}
 
@@ -103,7 +103,7 @@ results_aFB2 <- as.data.frame(res_aFB2)
 
 ```
 
-extract the repetitive elements 
+#extract the repetitive elements 
 
 ```{r}
 
@@ -112,7 +112,7 @@ repetitive_aFB2<-results_aFB2[!grepl("ENSG", rownames(results_aFB2)),]
 ```
 
 
-create a volcano plot and observe the diferentially expressed repetitive element between the BRCA2 mutant and WT BRCA2 over expressed.
+#create a volcano plot and observe the diferentially expressed repetitive element between the BRCA2 mutant and WT BRCA2 over expressed.
 
 ```{r,message=FALSE,warning=F}
 
@@ -123,7 +123,7 @@ EnhancedVolcano(repetitive_aFB2, lab = rownames(repetitive_aFB2),x ='log2FoldCha
 ```
 
 
-Analysis for the PAF 
+#Analysis for the PAF 
 
 ```{r,message=FALSE,warning=F}
 aPAF1_R1 = read.table("aPAF1_R1.cntTable",header = T)
@@ -149,7 +149,7 @@ aPAF1<- data.frame(aPAF1[,-1], row.names=aPAF1[,1])
 
 ```
 
-create the count data by merging BRCA2 mutant and  WT PAF1 over expressed
+#create the count data by merging BRCA2 mutant and  WT PAF1 over expressed
 
 ```{r}
 
@@ -159,7 +159,7 @@ count_aPAF1 <- cbind (a423,aPAF1)
 ```
 
 
-create the metadat that has to be loaded for DEseq2
+#create the metadat that has to be loaded for DEseq2
 
 ```{r}
 
@@ -175,7 +175,7 @@ metadata_aPAF1<-as.data.frame(cbind(metadata_aPAF1,sample_typePAF))
 ```
 
 
-conduct DEseq2
+#conduct DEseq2
 
 ```{r,message=FALSE,warning=F}
 
@@ -196,7 +196,7 @@ repetitive_PAF<-results_PAF[!grepl("ENSG", rownames(results_PAF)),]
 
 ```
 
-create the plot 
+#create the volcano plot 
 
 ```{r,message=FALSE,warning=F}
 
@@ -205,6 +205,8 @@ EnhancedVolcano(repetitive_PAF, lab = rownames(repetitive_PAF),x ='log2FoldChang
                 pCutoff = 0.05 , FCcutoff = 2, pointSize = 2.0,labSize = 3.0 )
 
 ```
+
+Conclusion of the Analysis:
 
 
 LTR which are known as retrotransposons are present in the human genome is a form of primary endogenous retrovirus(ERVs). MER4 is a also compramised of LTR ERVs.[1] HERV subfamilies are correlated to type II Inteferone response, CD 8 effector and immune checkpoint activity inferred from the bulk tumor tissue.[2] It is also stated the TEs expression may play a role to adaptive immune infiltration.[2]
