@@ -1,0 +1,225 @@
+---
+title: "Repetitive element"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+load the required libraries
+
+```{r,message=FALSE,warning=F}
+library(DESeq2)
+library(ggplot2)
+library( EnhancedVolcano )
+```
+
+load the BRCA2 mutant files 
+
+```{r,message=FALSE,warning=F}
+a423_R1 = read.table("a423_R1.cntTable",header = T)
+a423_R2 = read.table("a423_R2.cntTable",header = T) 
+a423_R3 = read.table("a423_R3.cntTable",header = T) 
+a423_R4 = read.table("a423_R4.cntTable",header = T) 
+a423_R5 = read.table("a423_R5.cntTable",header = T) 
+a423_R6 = read.table("a423_R6.cntTable",header = T) 
+
+a423=cbind(a423_R1,a423_R2[,2],a423_R3[,2],a423_R4[,2],a423_R5[,2],a423_R6[,2])
+
+column_name<-c("genes","a423_R1","a423_R2","a423_R3","a423_R4","a423_R5","a423_R6")
+
+colnames(a423)<-column_name
+
+a423$genes<- gsub(a423$genes, pattern = "\\..+", replacement = "")  
+
+a423<-a423[!duplicated(a423$genes), ]
+
+a423<- data.frame(a423[,-1], row.names=a423[,1])
+
+```
+
+load the EUFA cells WT BRCA2 over expressed
+
+```{r , echo=FALSE,message=FALSE,warning=F}
+
+aFB2_R1 = read.table("aFB2_R1.cntTable",header = T)
+aFB2_R2 = read.table("aFB2_R2.cntTable",header = T) 
+aFB2_R3 = read.table("aFB2_R3.cntTable",header = T) 
+aFB2_R4 = read.table("aFB2_R4.cntTable",header = T) 
+aFB2_R5 = read.table("aFB2_R5.cntTable",header = T) 
+aFB2_R6 = read.table("aFB2_R6.cntTable",header = T) 
+
+aFB2=cbind(aFB2_R1,aFB2_R2[,2],aFB2_R3[,2],aFB2_R4[,2],aFB2_R5[,2],aFB2_R6[,2])
+
+
+column_name<-c("genes","aFB2_R1","aFB2_R2","aFB2_R3","aFB2_R4","aFB2_R5","aFB2_R6")
+
+colnames(aFB2)<-column_name
+
+aFB2$genes<- gsub(aFB2$genes, pattern = "\\..+", replacement = "")  
+
+aFB2<-aFB2[!duplicated(aFB2$genes), ]
+
+aFB2<- data.frame(aFB2[,-1], row.names=aFB2[,1])
+
+```
+
+create the count table by merging the dataset
+
+```{r}
+
+count_aFB2 <- cbind (a423,aFB2)
+
+```
+
+create the metadata that has to be sent into DEseq2
+
+```{r}
+
+metadata_aFB2 <- colnames(count_aFB2)
+
+sample_type<-c("mutant","mutant","mutant","mutant","mutant","mutant",
+               "without BRCA2","without BRCA2","without BRCA2",
+               "without BRCA2","without BRCA2","without BRCA2")
+
+metadata_aFB2<-as.data.frame(cbind(metadata_aFB2,sample_type))
+
+```
+
+
+```{r,message=FALSE,warning=F}
+dds_aFB2<- DESeqDataSetFromMatrix(countData=count_aFB2, 
+                              colData=metadata_aFB2, 
+                              design=~sample_type)
+
+
+dds_aFB2<-DESeq( dds_aFB2 )
+
+res_aFB2<- results(dds_aFB2)
+
+results_aFB2 <- as.data.frame(res_aFB2)
+
+
+```
+
+extract the repetitive elements 
+
+```{r}
+
+repetitive_aFB2<-results_aFB2[!grepl("ENSG", rownames(results_aFB2)),]
+
+```
+
+
+create a volcano plot and observe the diferentially expressed repetitive element between the BRCA2 mutant and WT BRCA2 over expressed.
+
+```{r,message=FALSE,warning=F}
+
+EnhancedVolcano(repetitive_aFB2, lab = rownames(repetitive_aFB2),x ='log2FoldChange',
+                y ='padj',xlim =c(-4, 4), title ='BRCA2 mutant vs WT BRCA2 over expressed',
+                pCutoff = 0.05 , FCcutoff = 2, pointSize = 2.0,labSize = 3.0 )
+
+```
+
+
+Analysis for the PAF 
+
+```{r,message=FALSE,warning=F}
+aPAF1_R1 = read.table("aPAF1_R1.cntTable",header = T)
+aPAF1_R2= read.table("aPAF1_R2.cntTable",header = T) 
+aPAF1_R3 = read.table("aPAF1_R3.cntTable",header = T) 
+aPAF1_R4 = read.table("aPAF1_R4.cntTable",header = T) 
+aPAF1_R5 = read.table("aPAF1_R5.cntTable",header = T) 
+aPAF1_R6 = read.table("aPAF1_R6.cntTable",header = T) 
+
+
+aPAF1=cbind(aPAF1_R1,aPAF1_R2[,2],aPAF1_R3[,2],aPAF1_R4[,2],aPAF1_R5[,2],aPAF1_R6[,2])
+
+column_name<-c("genes","aPAF1_R1","aPAF2_R2","aPAF3_R3","aPAF4_R4","aPAF5_R5","aPAF6_R6")
+
+colnames(aPAF1)<-column_name
+
+aPAF1$genes<- gsub(aPAF1$genes, pattern = "\\..+", replacement = "")  
+
+aPAF1<-aPAF1[!duplicated(aPAF1$genes), ]
+
+aPAF1<- data.frame(aPAF1[,-1], row.names=aPAF1[,1])
+
+
+```
+
+create the count data by merging BRCA2 mutant and  WT PAF1 over expressed
+
+```{r}
+
+count_aPAF1 <- cbind (a423,aPAF1)
+
+
+```
+
+
+create the metadat that has to be loaded for DEseq2
+
+```{r}
+
+metadata_aPAF1 <- colnames(count_aPAF1)
+
+
+sample_typePAF<-c("mutant","mutant","mutant","mutant","mutant","mutant",
+               "PAF overexpressed","PAF overexpressed","PAF overexpressed",
+               "PAF overexpressed","PAF overexpressed","PAF overexpressed")
+
+metadata_aPAF1<-as.data.frame(cbind(metadata_aPAF1,sample_typePAF))
+
+```
+
+
+conduct DEseq2
+
+```{r,message=FALSE,warning=F}
+
+dds_PAF <- DESeqDataSetFromMatrix(countData=count_aPAF1, 
+                              colData=metadata_aPAF1, 
+                              design=~sample_typePAF)
+
+
+dds_PAF <-DESeq( dds_PAF )
+
+res_PAF <- results( dds_PAF )
+
+results_PAF <- as.data.frame(res_PAF)
+
+
+repetitive_PAF<-results_PAF[!grepl("ENSG", rownames(results_PAF)),]
+
+
+```
+
+create the plot 
+
+```{r,message=FALSE,warning=F}
+
+EnhancedVolcano(repetitive_PAF, lab = rownames(repetitive_PAF),x ='log2FoldChange',
+                y ='padj',xlim =c(-8, 8), title ='BRCA2 mutant vs WT PAF1 over expressed',
+                pCutoff = 0.05 , FCcutoff = 2, pointSize = 2.0,labSize = 3.0 )
+
+```
+
+
+LTR which are known as retrotransposons are present in the human genome is a form of primary endogenous retrovirus(ERVs). MER4 is a also compramised of LTR ERVs.[1] HERV subfamilies are correlated to type II Inteferone response, CD 8 effector and immune checkpoint activity inferred from the bulk tumor tissue.[2] It is also stated the TEs expression may play a role to adaptive immune infiltration.[2]
+
+
+In this case the result seem to be less significant to be considered for further analysis. 
+
+
+References:
+
+1.Kojima KK. Human transposable elements in Repbase: genomic footprints from fish to humans. Mob DNA. 2018;9:2. Published 2018 Jan 4.
+
+2.Kong, Y., Rose, C.M., Cass, A.A. et al. Transposable element expression in tumors is associated with immune infiltration and increased antigenicity. Nat Commun 10, 5228 (2019).
+
+
+
+
+
