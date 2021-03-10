@@ -206,7 +206,7 @@ EnhancedVolcano(repetitive_PAF, lab = rownames(repetitive_PAF),x ='log2FoldChang
 
 ```
 
-Conclusion of the Analysis:
+#Conclusion of the Analysis:
 
 
 LTR which are known as retrotransposons are present in the human genome is a form of primary endogenous retrovirus(ERVs). MER4 is a also compramised of LTR ERVs.[1] HERV subfamilies are correlated to type II Inteferone response, CD 8 effector and immune checkpoint activity inferred from the bulk tumor tissue.[2] It is also stated the TEs expression may play a role to adaptive immune infiltration.[2]
@@ -215,7 +215,7 @@ LTR which are known as retrotransposons are present in the human genome is a for
 In this case the result seem to be less significant to be considered for further analysis. 
 
 
-References:
+#References:
 
 1.Kojima KK. Human transposable elements in Repbase: genomic footprints from fish to humans. Mob DNA. 2018;9:2. Published 2018 Jan 4.
 
