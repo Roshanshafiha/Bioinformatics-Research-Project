@@ -7,7 +7,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-load the required libraries
+#load the required libraries
 
 ```{r,message=FALSE,warning=F}
 library(DESeq2)
